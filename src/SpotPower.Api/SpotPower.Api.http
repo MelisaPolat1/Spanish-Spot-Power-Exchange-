@@ -1,0 +1,6 @@
+@SpotPower.Api_HostAddress = http://localhost:5077
+
+GET {{SpotPower.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

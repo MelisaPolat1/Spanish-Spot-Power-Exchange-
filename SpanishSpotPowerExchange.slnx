@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SpotPower.Api/SpotPower.Api.csproj" />
+    <Project Path="src/SpotPower.Core/SpotPower.Core.csproj" />
+    <Project Path="src/SpotPower.Infrastructure/SpotPower.Infrastructure.csproj" />
+    <Project Path="src/SpotPower.Web/SpotPower.Web.csproj" />
+  </Folder>
+</Solution>
