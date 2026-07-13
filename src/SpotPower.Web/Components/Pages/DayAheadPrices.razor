@@ -1,0 +1,87 @@
+@page "/day-ahead-prices"
+@rendermode InteractiveServer
+@using SpotPower.Web.Models
+@using SpotPower.Web.Services
+@inject DayAheadPriceApiClient ApiClient
+
+<PageTitle>Day-Ahead Prices</PageTitle>
+
+<h1>Spanish/Portuguese Day-Ahead Auction Results</h1>
+
+<div style="display:flex; gap:1rem; align-items:end; margin-bottom:1rem;">
+    <div>
+        <label>Date</label><br />
+        <InputDate @bind-Value="_selectedDate" />
+    </div>
+    <div>
+        <label>Zone</label><br />
+        <select @bind="_selectedZone">
+            <option value="Spain">Spain</option>
+            <option value="Portugal">Portugal</option>
+        </select>
+    </div>
+    <button @onclick="LoadAsync" disabled="@_loading">
+        @(_loading ? "Loading..." : "Load")
+    </button>
+</div>
+
+@if (_error is not null)
+{
+    <p style="color:red;">@_error</p>
+}
+
+<PriceChart Prices="_prices" />
+
+@if (_prices is { Count: > 0 })
+{
+    <table style="margin-top:1rem; border-collapse:collapse; width:100%;">
+        <thead>
+            <tr style="text-align:left; border-bottom:2px solid #ccc;">
+                <th>Period start (CET)</th>
+                <th>Duration (min)</th>
+                <th>Price (EUR/MWh)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in _prices)
+            {
+                <tr style="border-bottom:1px solid #eee;">
+                    <td>@p.PeriodStartCet.ToString("yyyy-MM-dd HH:mm zzz")</td>
+                    <td>@p.DurationMinutes</td>
+                    <td>@p.PriceEurPerMwh.ToString("F2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private DateOnly _selectedDate = DateOnly.FromDateTime(DateTime.UtcNow);
+    private string _selectedZone = "Spain";
+    private List<DayAheadPricePointDto>? _prices;
+    private bool _loading;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _loading = true;
+        _error = null;
+        StateHasChanged();
+
+        try
+        {
+            _prices = await ApiClient.GetPricesAsync(_selectedDate, _selectedZone);
+        }
+        catch (Exception ex)
+        {
+            _error = $"Failed to load prices: {ex.Message}";
+            _prices = null;
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+}
