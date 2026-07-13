@@ -283,6 +283,7 @@ Period-to-UTC conversion explicitly handles both DST edge cases in
 
 Complete, unedited AI conversation transcripts from the research and
 implementation phases are in `ai-transcripts/`.
+https://claude.ai/share/8e932b81-4d76-4e74-b130-2b0d57f4bbab
 
 ## Attribution
 
